@@ -1,0 +1,25 @@
+{
+  "name": "Searchlight",
+  "description": "Privacy-focused AI research companion",
+  "version": "1.0",
+  "manifest_version": 3,
+
+  "background": {
+    "service_worker": "background.js"
+  },
+
+  "permissions": ["storage"],
+  "host_permissions": ["<all_urls>"],
+
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>", "https://www.google.com/*", "https://google.com/*"],
+      "js": ["popup.js"],
+      "css": ["popup.css"]
+    }
+  ],
+
+  "action": {
+    "default_icon": "icon.png"
+  }
+}

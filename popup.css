@@ -1,0 +1,282 @@
+.searchlight-bubble {
+    display: block;
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    background-image: url(https://images.openai.com/static-rsc-4/mlAOhAadkMoQ0zKok6-qBBw0IkZVSITsWPRJfvo4059IJ0yxNzOW6fue4Jx-Rb1bzwnKPT6sbLge8qYItCvlodY3X9W3CbQpqELVixuW-sp0SQQ39Iarf0gqlV9rjxzTvrJ6gh7zZjQQyapE3TO1P7A4aoxF0x1bVWXbJrA5FhE?purpose=inline);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    width: 57px;
+    height: 57px;
+
+    border-radius: 50%;
+    border: 0.5px solid white;
+
+    background-color: rgb(0, 0, 53);
+
+    cursor: pointer;
+    touch-action: none;
+    user-select: none;
+    transition:
+        width 220ms ease,
+        height 220ms ease,
+        right 220ms ease,
+        bottom 220ms ease,
+        border-radius 220ms ease,
+        transform 220ms ease,
+        opacity 220ms ease,
+        background-color 220ms ease;
+
+    z-index: 2147483646;
+}
+
+.searchlight-popup {
+    display: flex;
+
+    position: fixed;
+    left: auto;
+    top: auto;
+    right: 20px;
+    bottom: 85px;
+
+    box-sizing: border-box;
+    width: min(320px, calc(100vw - 32px));
+    max-height: min(80vh, 620px);
+    overflow-y: auto;
+
+    padding: 15px;
+
+    border-radius: 15px;
+
+    color: #000;
+    background: linear-gradient(to top right, #6f4d99, #32174D);
+    border: 1px solid #51486a;
+
+    z-index: 2147483647;
+
+    flex-direction: column;
+    gap: 10px;
+
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transform: scale(0.15) translate(16px, 16px);
+    transform-origin: bottom right;
+    transition:
+        opacity 180ms ease,
+        transform 220ms cubic-bezier(0.2, 0.8, 0.2, 1),
+        visibility 220ms;
+}
+
+.searchlight-popup-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.searchlight-popup-header h2 {
+    margin: 0 0 2px;
+    color: #fff;
+    font: 600 17px/1.2 Arial, sans-serif;
+    cursor: grab;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+.searchlight-popup-header h2:active {
+    cursor: grabbing;
+}
+
+.searchlight-clear-form {
+    display: grid;
+    flex: 0 0 32px;
+    width: 32px;
+    height: 32px;
+    place-items: center;
+    padding: 5px;
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    border-radius: 6px;
+    color: #fff;
+    background: rgba(255, 255, 255, 0.08);
+    cursor: pointer;
+}
+
+.searchlight-clear-form:hover {
+    color: #ffd1d1;
+    border-color: #ffd1d1;
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.searchlight-clear-form:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: 2px;
+}
+
+.searchlight-clear-form svg {
+    width: 20px;
+    height: 20px;
+    fill: none;
+    stroke: currentColor;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 1.8;
+}
+
+.searchlight-popup.is-open {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: scale(1) translate(0, 0);
+}
+
+.searchlight-popup input,
+.searchlight-popup textarea,
+.searchlight-popup select {
+    box-sizing: border-box;
+    width: 100%;
+    padding: 7px;
+    border: 1px solid #8b8498;
+    border-radius: 4px;
+    color: #000;
+    background-color: #fff;
+    font: 14px/1.4 Arial, sans-serif;
+}
+
+.searchlight-popup input::placeholder,
+.searchlight-popup textarea::placeholder {
+    color: #000;
+    opacity: 1;
+}
+
+.searchlight-popup select option {
+    color: #000;
+    background: #fff;
+}
+
+.searchlight-popup textarea {
+    min-height: 86px;
+    resize: vertical;
+}
+
+.searchlight-new-title-wrap[hidden] {
+    display: none;
+}
+
+.searchlight-other-category-wrap[hidden] {
+    display: none;
+}
+
+.searchlight-capture-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.searchlight-upload,
+.searchlight-screenshot,
+.searchlight-save,
+.searchlight-remove-image {
+    box-sizing: border-box;
+    min-height: 34px;
+    padding: 8px 10px;
+    border: 1px solid #8b8498;
+    border-radius: 4px;
+    color: #000;
+    background: #f7f5fb;
+    cursor: pointer;
+    font: 600 12px/1.2 Arial, sans-serif;
+    text-align: center;
+}
+
+.searchlight-upload {
+    flex: 1;
+    border-color: #49316a;
+    color: #fff;
+    background: #6f4d99;
+}
+
+.searchlight-screenshot {
+    flex: 1;
+    border-color: #49316a;
+    color: #fff;
+    background: #6f4d99;
+}
+
+.searchlight-file {
+    position: absolute;
+    width: 1px !important;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+}
+
+.searchlight-upload:focus-within,
+.searchlight-screenshot:focus-visible,
+.searchlight-save:focus-visible {
+    outline: 2px solid #000;
+    outline-offset: 2px;
+}
+
+.searchlight-screenshot:disabled {
+    cursor: wait;
+    opacity: 0.7;
+}
+
+.searchlight-image-preview {
+    position: relative;
+    max-height: 150px;
+    overflow: hidden;
+    border-radius: 4px;
+}
+
+.searchlight-image-preview[hidden] {
+    display: none;
+}
+
+.searchlight-image-preview img {
+    display: block;
+    width: 100%;
+    max-height: 150px;
+    object-fit: contain;
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.searchlight-remove-image {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    min-height: 28px;
+}
+
+.searchlight-source,
+.searchlight-status {
+    color: #000;
+    font: 12px/1.4 Arial, sans-serif;
+    overflow-wrap: anywhere;
+}
+
+.searchlight-status.is-error {
+    color: #000;
+}
+
+.searchlight-save {
+    width: 100%;
+    border-color: #32174d;
+    background: #32174d;
+    color: #fff;
+}
+
+.searchlight-bubble.is-hidden {
+    width: 18px;
+    height: 40px;
+    right: 0;
+    bottom: 20px;
+    border-radius: 10px 0 0 10px;
+    background-image: none;
+    background-color: #6f4d99;
+    transform: translateX(6px);
+    opacity: 0.9;
+}

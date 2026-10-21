@@ -1,0 +1,49 @@
+body {
+    color: white;
+    background: linear-gradient(135deg, #111936 0%, #1c2855 100%);
+    font-family: Red-Hat-Display, Courier, monospace;
+}
+
+.title-font {
+    font-size: 40px;
+    white-space: nowrap;
+}
+
+.sameline {
+    white-space: nowrap;
+}
+
+.top-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 50px;
+    height: 75vh;
+}
+
+.top-row-1 {
+    display: flex;
+    justify-content: center;
+}
+
+.test {
+    background-color: aliceblue;
+    height: 50px;
+}
+
+.center-text {
+    text-align: center;
+    margin: 1px;
+}
+
+#logo {
+    height: 50px;
+}
+
+.inline {
+    display: flex;
+}
+
+.topbox {
+    border: 1px solid white;
+    height: 70px;
+}

@@ -1,0 +1,1249 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Research Map</title>
+  <link rel="icon" type="image/png" href="Tab_icon.png">
+<link rel="stylesheet" href="popup.css">
+
+<style>
+  body {
+    color: white;
+    background-color: rgb(1, 1, 81);
+    font-family: Red-Hat-Display, Courier, monospace;
+  }
+
+  .title-font {
+    font-size: 75px;
+    white-space: nowrap;
+  }
+
+  .title-font2 {
+    font-size: 28px;
+    white-space: nowrap;
+  }
+
+  .sameline {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    white-space: nowrap;
+  }
+
+  .top-row {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 24px;
+    min-height: 15vh;
+    padding: 12px 24px;
+    box-sizing: border-box;
+  }
+
+  .top-row-1 {
+    display: flex;
+    justify-content: center;
+  }
+
+  .test {
+    display: flex;
+    background-color: aliceblue;
+    justify-content: baseline;
+    height: 50px;
+  }
+
+  .center-text {
+    justify-content: center;
+    text-align: center;
+    margin: 1px;
+  }
+
+  #logo {
+    height: 120px;
+    width: 120px;
+    object-fit: contain;
+  }
+
+  .inline {
+    display: flex;
+  }
+
+  .topbox {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    margin: 1px;
+    border: 1px solid white;
+    height: 70px;
+  }
+
+  .topbox-button {
+    padding: 0 12px;
+    color: white;
+    background: transparent;
+    font: inherit;
+    cursor: pointer;
+  }
+
+  .topbox-button:focus-visible,
+  .research-picker-close:focus-visible,
+  .research-picker-item:focus-visible {
+    outline: 2px solid white;
+    outline-offset: 3px;
+  }
+
+  .textarea {
+    width: 300px;
+    height: 50px;
+    background-color: rgb(255, 255, 255);
+    color: black;
+    border: 1px solid rgb(138, 138, 138);
+    font-family: Red-Hat-Display, Courier, monospace;
+    font-size: 37px;
+  }
+
+  .source-search {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .source-search input {
+    box-sizing: border-box;
+    width: min(280px, 30vw);
+    min-width: 150px;
+    min-height: 40px;
+    padding: 8px 10px;
+    border: 1px solid rgb(138, 138, 138);
+    border-radius: 4px;
+    color: #111;
+    background: white;
+    font-family: inherit;
+    font-size: 16px;
+  }
+
+  .source-search button {
+    min-height: 40px;
+    padding: 0 12px;
+    border: 1px solid rgba(255, 255, 255, 0.7);
+    border-radius: 4px;
+    color: white;
+    background: transparent;
+    font: inherit;
+    cursor: pointer;
+  }
+
+  .source-search input:focus-visible,
+  .source-search button:focus-visible {
+    outline: 2px solid white;
+    outline-offset: 2px;
+  }
+
+  .research-library {
+    padding: 16px 24px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.35);
+  }
+
+  .research-library h1 {
+    margin: 0 0 12px;
+    font-size: 24px;
+  }
+
+  .research-entry {
+    padding: 12px 0 24px;
+    overflow-wrap: anywhere;
+  }
+
+  .research-result-category,
+  .research-result-source {
+    margin: 0 0 6px;
+    color: rgba(255, 255, 255, 0.72);
+    font-size: 14px;
+  }
+
+  .research-entry .title-font2 {
+    white-space: normal;
+    overflow-wrap: anywhere;
+    margin: 10px 0;
+  }
+
+  .research-entry h2 {
+    margin: 8px 0;
+    font-size: 22px;
+    font-weight: 500;
+    white-space: pre-wrap;
+  }
+
+  .research-summary {
+    max-width: 760px;
+    margin: 10px 0;
+    line-height: 1.5;
+    white-space: pre-wrap;
+  }
+
+  .research-summary strong {
+    display: block;
+    margin-bottom: 4px;
+  }
+
+  .research-entry a {
+    color: white;
+    font-size: inherit;
+    overflow-wrap: anywhere;
+    text-decoration: none;
+  }
+
+  .research-entry .research-title-link:hover {
+    text-decoration: underline;
+  }
+
+  .research-entry img {
+    display: block;
+    width: min(100%, 520px);
+    max-height: 320px;
+    margin-top: 10px;
+    object-fit: contain;
+    object-position: left;
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  .research-empty {
+    color: rgba(255, 255, 255, 0.75);
+    font-size: 14px;
+  }
+
+  .research-picker-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 10;
+    display: grid;
+    place-items: center;
+    padding: 20px;
+    background: rgba(0, 0, 20, 0.72);
+  }
+
+  .research-picker-backdrop[hidden] {
+    display: none;
+  }
+
+  .gemini-settings {
+    box-sizing: border-box;
+    width: min(440px, calc(100vw - 32px));
+    padding: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    border-radius: 6px;
+    color: white;
+    background: #11114f;
+    box-shadow: 0 18px 50px rgba(0, 0, 0, 0.45);
+  }
+
+  .gemini-settings::backdrop {
+    background: rgba(0, 0, 20, 0.72);
+  }
+
+  .gemini-settings h2 {
+    margin: 0 0 12px;
+    font-size: 20px;
+  }
+
+  .gemini-settings p {
+    color: rgba(255, 255, 255, 0.78);
+    font-size: 14px;
+    line-height: 1.45;
+  }
+
+  .gemini-settings input {
+    box-sizing: border-box;
+    width: 100%;
+    min-height: 38px;
+    padding: 8px;
+  }
+
+  .gemini-settings-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 16px;
+  }
+
+  .gemini-settings-actions button {
+    min-height: 36px;
+    padding: 6px 12px;
+    border: 1px solid rgba(255, 255, 255, 0.65);
+    border-radius: 4px;
+    color: white;
+    background: rgba(255, 255, 255, 0.12);
+    cursor: pointer;
+  }
+
+  .gemini-settings-status {
+    min-height: 1.4em;
+    margin-bottom: 0;
+  }
+
+  .research-picker {
+    box-sizing: border-box;
+    width: min(520px, 100%);
+    max-height: min(680px, 85vh);
+    display: flex;
+    flex-direction: column;
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    border-radius: 6px;
+    background: #11114f;
+    box-shadow: 0 18px 50px rgba(0, 0, 0, 0.45);
+  }
+
+  .research-picker-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 14px 18px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.25);
+  }
+
+  .research-picker-header h2 {
+    margin: 0;
+    font-size: 20px;
+  }
+
+  .research-picker-close {
+    width: 36px;
+    height: 36px;
+    border: 1px solid rgba(255, 255, 255, 0.55);
+    border-radius: 4px;
+    color: white;
+    background: transparent;
+    font-size: 24px;
+    cursor: pointer;
+  }
+
+  .research-picker-list {
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding: 8px;
+  }
+
+  .research-picker-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.18);
+  }
+
+  .research-picker-item {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+    flex: 1;
+    min-width: 0;
+    padding: 12px;
+    border: 0;
+    color: white;
+    background: transparent;
+    text-align: left;
+    cursor: pointer;
+  }
+
+  .research-picker-menu {
+    flex-shrink: 0;
+    margin: 8px 8px 0 0;
+  }
+
+  .research-picker-item:hover,
+  .research-picker-item[aria-current="true"] {
+    background: rgba(255, 255, 255, 0.12);
+  }
+
+  .research-picker-item-title {
+    font-size: 17px;
+    font-weight: 600;
+    overflow-wrap: anywhere;
+  }
+
+  .research-picker-item-source {
+    color: rgba(255, 255, 255, 0.72);
+    font-size: 13px;
+    overflow-wrap: anywhere;
+  }
+
+  @media (max-width: 700px) {
+    .research-library {
+      padding: 16px;
+    }
+  }
+
+  :root {
+    --map-bg: #071126;
+    --map-panel: #0d1934;
+    --map-panel-raised: #111f40;
+    --map-border: rgba(152, 181, 224, 0.2);
+    --map-text: #edf3ff;
+    --map-muted: #91a3c4;
+    --map-cyan: #52d6e8;
+    --map-violet: #a994ff;
+    --map-lime: #c7e86a;
+    --map-rose: #ff80ad;
+  }
+
+  body {
+    min-width: 360px;
+    min-height: 100vh;
+    margin: 0;
+    color: var(--map-text);
+    background: var(--map-bg);
+    font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+  }
+
+  .map-header {
+    position: sticky;
+    top: 0;
+    z-index: 4;
+    box-sizing: border-box;
+    min-height: 78px;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    padding: 10px 22px;
+    border-bottom: 1px solid var(--map-border);
+    background: rgba(7, 17, 38, 0.96);
+  }
+
+  .map-brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 200px;
+    color: var(--map-text);
+    font-size: 19px;
+    font-weight: 700;
+    text-decoration: none;
+  }
+
+  .map-brand img {
+    width: 48px;
+    height: 48px;
+    object-fit: contain;
+  }
+
+  .source-search {
+    flex: 1;
+    max-width: 620px;
+    min-width: 180px;
+    margin-right: auto;
+  }
+
+  .source-search input {
+    width: 100%;
+    min-width: 0;
+    min-height: 42px;
+    border: 1px solid rgba(137, 159, 207, 0.35);
+    border-radius: 6px;
+    color: var(--map-text);
+    background: #101d3b;
+    font: 15px/1.3 "Trebuchet MS", "Segoe UI", sans-serif;
+  }
+
+  .source-search input::placeholder {
+    color: #8798b9;
+  }
+
+  .source-search button,
+  .map-header .topbox-button {
+    height: 42px;
+    min-height: 42px;
+    padding: 0 14px;
+    border: 1px solid rgba(143, 128, 255, 0.7);
+    border-radius: 6px;
+    color: var(--map-text);
+    background: #101b39;
+    font: 600 13px "Trebuchet MS", "Segoe UI", sans-serif;
+    text-transform: uppercase;
+  }
+
+  .source-search button:hover,
+  .map-header .topbox-button:hover {
+    border-color: var(--map-cyan);
+    background: #17284a;
+  }
+
+  .map-header-actions {
+    display: flex;
+    flex: 0 0 auto;
+    gap: 10px;
+  }
+
+  .map-workspace {
+    min-height: calc(100vh - 78px);
+    display: grid;
+    grid-template-columns: 220px minmax(0, 1fr);
+  }
+
+  .research-sidebar {
+    box-sizing: border-box;
+    min-height: calc(100vh - 78px);
+    padding: 20px 12px;
+    border-right: 1px solid var(--map-border);
+    background: var(--map-panel);
+  }
+
+  .sidebar-heading h2 {
+    margin: 0 0 14px 4px;
+    font-size: 17px;
+  }
+
+  .research-type-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .research-type-group {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .research-type-button {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    width: 100%;
+    min-height: 42px;
+    padding: 0 10px;
+    border: 0;
+    border-radius: 5px;
+    color: #cad5eb;
+    background: transparent;
+    text-align: left;
+    font: 14px "Trebuchet MS", "Segoe UI", sans-serif;
+    cursor: pointer;
+  }
+
+  .research-type-button:hover,
+  .research-type-button[aria-current="true"] {
+    color: white;
+    background: #19294b;
+  }
+
+  .research-type-button[aria-current="true"] {
+    box-shadow: inset 3px 0 var(--map-cyan);
+  }
+
+  .research-type-count {
+    color: var(--map-muted);
+    font-size: 12px;
+  }
+
+  .research-subtype-list {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    margin: 0 0 6px 14px;
+    padding-left: 8px;
+    border-left: 1px solid var(--map-border);
+  }
+
+  .research-category-group {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+  }
+
+  .research-subtab-row {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    min-width: 0;
+  }
+
+  .research-subtype-button {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    width: 100%;
+    min-height: 32px;
+    padding: 0 8px;
+    border: 0;
+    border-radius: 4px;
+    color: var(--map-muted);
+    background: transparent;
+    text-align: left;
+    font: 12px "Trebuchet MS", "Segoe UI", sans-serif;
+    cursor: pointer;
+  }
+
+  .research-subtab-row .research-subtype-button {
+    flex: 1;
+    min-width: 0;
+    padding-left: calc(8px + var(--category-depth, 0) * 12px);
+  }
+
+  .research-subtype-button.has-subtabs {
+    justify-content: flex-start;
+  }
+
+  .research-subtab-caret {
+    flex: 0 0 10px;
+    color: var(--map-cyan);
+    font-size: 19px;
+    line-height: 1;
+    transition: transform 120ms ease;
+  }
+
+  .research-subtype-button[aria-expanded="true"] .research-subtab-caret {
+    transform: rotate(90deg);
+  }
+
+  .research-subtype-button.has-subtabs .research-type-count {
+    margin-left: auto;
+  }
+
+  .research-subtab-add {
+    flex: 0 0 26px;
+    width: 26px;
+    height: 28px;
+    border: 0;
+    border-radius: 4px;
+    color: var(--map-muted);
+    background: transparent;
+    font: 18px/1 "Trebuchet MS", "Segoe UI", sans-serif;
+    cursor: pointer;
+  }
+
+  .research-subtab-add:hover,
+  .research-subtab-add:focus-visible {
+    color: white;
+    background: #19294b;
+  }
+
+  .research-subtab-add:focus-visible {
+    outline: 2px solid var(--map-cyan);
+    outline-offset: 1px;
+  }
+
+  .research-subtype-button:hover,
+  .research-subtype-button[aria-current="true"] {
+    color: white;
+    background: #19294b;
+  }
+
+  .research-subtype-button:focus-visible {
+    outline: 2px solid var(--map-cyan);
+    outline-offset: 2px;
+  }
+
+  .research-main {
+    min-width: 0;
+    padding: 26px clamp(16px, 3vw, 42px) 40px;
+    background-color: #09142d;
+    background-image: radial-gradient(rgba(133, 158, 205, 0.15) 0.8px, transparent 0.8px);
+    background-size: 24px 24px;
+    transition: padding-right 180ms ease;
+  }
+
+  body.inspector-open .research-main {
+    padding-right: min(370px, 30vw);
+  }
+
+  .board-heading {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 22px;
+  }
+
+  .board-heading p {
+    margin: 0 0 6px;
+    color: var(--map-cyan);
+    font-size: 11px;
+    font-weight: 700;
+  }
+
+  .board-heading h1 {
+    margin: 0;
+    font-size: 27px;
+    font-weight: 650;
+    overflow-wrap: anywhere;
+  }
+
+  .research-result-count {
+    color: var(--map-muted);
+    font-size: 13px;
+  }
+
+  .board-heading-actions {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 12px;
+  }
+
+  .research-view-controls {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 6px;
+  }
+
+  .research-view-controls[hidden] {
+    display: none;
+  }
+
+  .research-view-button {
+    min-height: 34px;
+    padding: 0 10px;
+    border: 1px solid var(--map-border);
+    border-radius: 5px;
+    color: var(--map-muted);
+    background: #101d3b;
+    font: 12px "Trebuchet MS", "Segoe UI", sans-serif;
+    cursor: pointer;
+  }
+
+  .research-view-button:hover,
+  .research-view-button[aria-current="true"] {
+    border-color: var(--map-violet);
+    color: var(--map-text);
+    background: #19294b;
+  }
+
+  .research-view-add {
+    color: var(--map-cyan);
+  }
+
+  .map-create-dialog {
+    box-sizing: border-box;
+    width: min(460px, calc(100vw - 32px));
+    padding: 22px;
+    border: 1px solid rgba(152, 181, 224, 0.35);
+    border-radius: 8px;
+    color: var(--map-text);
+    background: #0e1a38;
+    box-shadow: 0 18px 50px rgba(0, 0, 0, 0.45);
+  }
+
+  .map-create-dialog::backdrop {
+    background: rgba(0, 0, 20, 0.72);
+  }
+
+  .map-create-dialog h2 {
+    margin: 0 0 16px;
+    font-size: 20px;
+  }
+
+  .map-create-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .map-create-form label {
+    color: var(--map-muted);
+    font-size: 13px;
+  }
+
+  .map-create-form input,
+  .map-create-form textarea {
+    box-sizing: border-box;
+    width: 100%;
+    min-height: 40px;
+    padding: 9px 10px;
+    border: 1px solid var(--map-border);
+    border-radius: 5px;
+    color: var(--map-text);
+    background: #101d3b;
+    font: 14px "Trebuchet MS", "Segoe UI", sans-serif;
+  }
+
+  .map-create-form textarea {
+    min-height: 82px;
+    resize: vertical;
+  }
+
+  .map-create-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-top: 8px;
+  }
+
+  .map-create-actions button {
+    min-height: 36px;
+    padding: 0 13px;
+    border: 1px solid var(--map-border);
+    border-radius: 5px;
+    color: var(--map-text);
+    background: #172548;
+    font: 600 13px "Trebuchet MS", "Segoe UI", sans-serif;
+    cursor: pointer;
+  }
+
+  .map-create-actions button[type="submit"] {
+    border-color: #7564e8;
+    background: #4338b9;
+  }
+
+  .research-board.is-concept-map {
+    position: relative;
+    display: block;
+    height: min(72vh, 760px);
+    min-height: 500px;
+    overflow: hidden;
+    border-radius: 10px;
+    background-color: rgba(7, 17, 38, 0.7);
+    background-image: radial-gradient(rgba(133, 158, 205, 0.22) 0.8px, transparent 0.8px);
+    background-size: 24px 24px;
+    cursor: grab;
+    touch-action: none;
+    user-select: none;
+  }
+
+  .research-board.is-concept-map.is-panning {
+    cursor: grabbing;
+  }
+
+  .concept-map-canvas {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  .concept-map-links {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+    pointer-events: none;
+  }
+
+  .concept-map-link {
+    stroke: rgba(119, 153, 242, 0.78);
+    stroke-width: 2;
+  }
+
+  .concept-map-topic,
+  .concept-map-source {
+    position: absolute;
+    z-index: 1;
+    box-sizing: border-box;
+    width: 210px;
+    border: 1px solid rgba(113, 152, 255, 0.9);
+    border-radius: 8px;
+    color: var(--map-text);
+    background: #102958;
+    box-shadow: 0 8px 26px rgba(0, 0, 0, 0.3);
+    transform: translate(-50%, -50%);
+    pointer-events: auto;
+  }
+
+  .concept-map-topic {
+    z-index: 2;
+    width: 260px;
+    min-height: 100px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 8px;
+    padding: 18px;
+    border-color: var(--map-violet);
+    background: #20265a;
+    text-align: center;
+  }
+
+  .concept-map-topic-label {
+    color: #c1acff;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+
+  .concept-map-topic h2 {
+    margin: 0;
+    font-size: 17px;
+    line-height: 1.35;
+    overflow-wrap: anywhere;
+  }
+
+  .concept-map-topic-edit {
+    align-self: center;
+    min-height: 28px;
+    padding: 0 9px;
+    border: 1px solid rgba(193, 172, 255, 0.55);
+    border-radius: 4px;
+    color: #e6dcff;
+    background: rgba(255, 255, 255, 0.06);
+    font: 12px "Trebuchet MS", "Segoe UI", sans-serif;
+    cursor: pointer;
+  }
+
+  .concept-map-topic-edit:hover,
+  .concept-map-topic-edit:focus-visible {
+    border-color: var(--map-cyan);
+    background: rgba(255, 255, 255, 0.12);
+  }
+
+  .concept-map-topic-edit:focus-visible {
+    outline: 2px solid var(--map-cyan);
+    outline-offset: 2px;
+  }
+
+  .research-board .concept-map-source {
+    min-height: 0;
+    padding: 0;
+    overflow: visible;
+    border-left: 1px solid rgba(113, 152, 255, 0.9);
+  }
+
+  .concept-map-source .research-entry-open {
+    min-height: 140px;
+    padding: 12px 40px 12px 12px;
+  }
+
+  .concept-map-source .research-entry-thumbnail {
+    max-height: 62px;
+  }
+
+  .concept-map-source .research-link-menu {
+    top: 5px;
+    right: 5px;
+  }
+
+  .research-board {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(250px, 100%), 1fr));
+    align-content: start;
+    gap: 16px;
+  }
+
+  .research-entry {
+    position: relative;
+    box-sizing: border-box;
+    min-width: 0;
+    min-height: 210px;
+    padding: 0;
+    overflow: hidden;
+    border: 1px solid var(--map-border);
+    border-left: 3px solid var(--map-violet);
+    border-radius: 8px;
+    background: rgba(15, 29, 59, 0.96);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.14);
+    transition: border-color 150ms ease, transform 150ms ease, background 150ms ease;
+  }
+
+  .research-entry:hover {
+    transform: translateY(-2px);
+    background: #122345;
+  }
+
+  .research-entry.type-source { border-left-color: var(--map-cyan); }
+  .research-entry.type-notes { border-left-color: var(--map-lime); }
+  .research-entry.type-image { border-left-color: var(--map-rose); }
+
+  .research-entry .research-entry-header {
+    display: block;
+  }
+
+  .research-entry-open {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 9px;
+    width: 100%;
+    min-height: 208px;
+    padding: 16px 48px 16px 16px;
+    border: 0;
+    color: var(--map-text);
+    background: transparent;
+    text-align: left;
+    cursor: pointer;
+  }
+
+  .research-entry-open:focus-visible,
+  .inspector-close:focus-visible,
+  .research-type-button:focus-visible {
+    outline: 2px solid var(--map-cyan);
+    outline-offset: 2px;
+  }
+
+  .research-entry-type {
+    color: var(--map-cyan);
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+
+  .research-entry-title {
+    margin: 0;
+    font-size: 17px;
+    line-height: 1.35;
+    overflow-wrap: anywhere;
+  }
+
+  .research-entry-source {
+    margin: 0;
+    color: var(--map-muted);
+    font-size: 12px;
+    overflow-wrap: anywhere;
+  }
+
+  .research-entry-preview {
+    display: -webkit-box;
+    max-width: 100%;
+    margin: 0;
+    overflow: hidden;
+    color: #c2cee2;
+    font-size: 13px;
+    line-height: 1.45;
+    -webkit-box-orient: vertical;
+    line-clamp: 3;
+    -webkit-line-clamp: 3;
+  }
+
+  .research-entry-thumbnail {
+    width: 100%;
+    max-height: 96px;
+    margin-top: auto;
+    border-radius: 4px;
+    object-fit: cover;
+    background: #070f22;
+  }
+
+  .research-entry .research-link-menu {
+    position: absolute;
+    top: 9px;
+    right: 9px;
+    z-index: 1;
+    margin: 0;
+    border-color: transparent;
+    background: transparent;
+  }
+
+  .research-entry .research-link-menu:hover {
+    border-color: var(--map-border);
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  .research-result-category,
+  .research-result-source {
+    display: none;
+  }
+
+  .research-inspector {
+    position: fixed;
+    z-index: 3;
+    top: 78px;
+    right: 0;
+    bottom: 0;
+    box-sizing: border-box;
+    width: min(350px, 32vw);
+    padding: 14px;
+    overflow-y: auto;
+    border: 1px solid var(--map-border);
+    border-radius: 12px 0 0 12px;
+    background: #0e1a38;
+    box-shadow: -12px 0 36px rgba(0, 0, 0, 0.25);
+  }
+
+  .research-inspector[hidden] {
+    display: none;
+  }
+
+  .inspector-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+  }
+
+  .inspector-type {
+    color: var(--map-cyan);
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+
+  .inspector-close {
+    width: 32px;
+    height: 32px;
+    border: 0;
+    border-radius: 5px;
+    color: #b6c4dc;
+    background: transparent;
+    font-size: 23px;
+    cursor: pointer;
+  }
+
+  .inspector-content h2 {
+    margin: 8px 0 12px;
+    font-size: 19px;
+    line-height: 1.35;
+    overflow-wrap: anywhere;
+  }
+
+  .inspector-content p {
+    color: #d3dced;
+    font-size: 14px;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+    white-space: pre-wrap;
+  }
+
+  .inspector-meta {
+    color: var(--map-muted) !important;
+    font-size: 12px !important;
+  }
+
+  .inspector-link {
+    display: block;
+    margin: 12px 0;
+    color: var(--map-cyan);
+    font-size: 13px;
+    overflow-wrap: anywhere;
+  }
+
+  .inspector-image {
+    display: block;
+    width: 100%;
+    max-height: 250px;
+    margin: 14px 0;
+    border-radius: 6px;
+    object-fit: contain;
+    background: #080f21;
+  }
+
+  .inspector-section-label {
+    margin: 18px 0 4px;
+    color: var(--map-muted);
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  @media (max-width: 900px) {
+    .map-header { gap: 12px; padding-inline: 14px; }
+    .map-brand { min-width: auto; }
+    .map-brand span { display: none; }
+    .map-workspace { grid-template-columns: 180px minmax(0, 1fr); }
+    body.inspector-open .research-main { padding-right: 200px; }
+    .research-inspector { width: 280px; }
+  }
+
+  @media (max-width: 650px) {
+    .map-header { flex-wrap: wrap; }
+    .map-brand span { display: inline; font-size: 15px; }
+    .source-search { order: 3; flex-basis: 100%; max-width: none; }
+    .map-header-actions { margin-left: auto; }
+    .map-header .topbox-button { min-height: 36px; padding-inline: 9px; }
+    .map-workspace { grid-template-columns: minmax(0, 1fr); }
+    .research-sidebar { min-height: 0; padding: 12px; border-right: 0; border-bottom: 1px solid var(--map-border); }
+    .sidebar-heading { display: flex; align-items: center; gap: 12px; }
+    .sidebar-heading h2 { margin: 0; }
+    .research-type-nav { flex-direction: row; align-items: flex-start; overflow-x: auto; margin-top: 10px; }
+    .research-type-group { flex: 0 0 auto; width: 142px; }
+    .research-type-button { width: 100%; min-width: 0; }
+    .research-subtype-list { margin-left: 8px; }
+    .research-main { padding: 20px 14px; }
+    body.inspector-open .research-main { padding-right: 14px; }
+    .research-inspector { top: 0; width: min(400px, 100vw); border-radius: 0; }
+    .research-board { grid-template-columns: repeat(auto-fill, minmax(min(230px, 100%), 1fr)); }
+  }
+</style>
+</head>
+<body>
+  <header class="map-header">
+    <a class="map-brand" href="research-map.html" aria-label="Searchlight Research Map">
+      <img src="https://plus.unsplash.com/premium_vector-1738480057358-9b18c2c172ea?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D" alt="Searchlight Logo"/>
+      <span>SEARCHLIGHT</span>
+    </a>
+    <form id="source-search-form" class="source-search" role="search">
+      <input id="source-search-input" type="search" aria-label="Search all categories and sources" placeholder="Search your research...">
+      <button type="submit" aria-label="Search sources">Search</button>
+      <button id="source-search-clear" type="button">Clear</button>
+    </form>
+    <div class="map-header-actions">
+      <button id="gemini-settings-toggle" class="topbox topbox-button" type="button" aria-haspopup="dialog">Settings</button>
+      <button id="saved-research-toggle" class="topbox topbox-button" type="button" aria-haspopup="dialog" aria-expanded="false">Categories</button>
+    </div>
+  </header>
+  <div id="research-picker-backdrop" class="research-picker-backdrop" hidden>
+    <section class="research-picker" role="dialog" aria-modal="true" aria-labelledby="research-picker-heading">
+      <header class="research-picker-header">
+        <h2 id="research-picker-heading">Choose saved research</h2>
+        <button id="research-picker-close" class="research-picker-close" type="button" aria-label="Close saved research list">&times;</button>
+      </header>
+      <div id="research-picker-list" class="research-picker-list"></div>
+    </section>
+  </div>
+  <dialog id="gemini-settings" class="gemini-settings" aria-labelledby="gemini-settings-heading">
+    <form id="gemini-settings-form">
+      <h2 id="gemini-settings-heading">Gemini summaries</h2>
+      <p>The key is stored in this browser profile and sent to Google for summaries. Extension storage is not a secure secret store; use a Gemini-restricted personal key. Shared deployments need a backend proxy.</p>
+      <label for="gemini-api-key">Gemini API key</label>
+      <input id="gemini-api-key" type="password" autocomplete="off" spellcheck="false" placeholder="Paste your API key">
+      <p id="gemini-settings-status" class="gemini-settings-status" role="status" aria-live="polite"></p>
+      <div class="gemini-settings-actions">
+        <button type="submit">Save key</button>
+        <button id="gemini-key-remove" type="button">Remove key</button>
+        <button id="gemini-settings-close" type="button">Done</button>
+      </div>
+    </form>
+  </dialog>
+  <div class="map-workspace">
+    <aside class="research-sidebar" aria-label="Research types">
+      <div class="sidebar-heading">
+        <h2>My Research</h2>
+      </div>
+      <nav id="research-type-nav" class="research-type-nav" aria-label="Filter by research type"></nav>
+    </aside>
+    <main class="research-main">
+      <header class="board-heading">
+        <div>
+          <p>RESEARCH LIBRARY</p>
+          <h1 id="research-library-heading">All Projects</h1>
+        </div>
+        <div class="board-heading-actions">
+          <span id="research-result-count" class="research-result-count"></span>
+          <div id="research-view-controls" class="research-view-controls" hidden>
+            <button id="research-cards-view" class="research-view-button" type="button" aria-current="true">Cards</button>
+            <div id="research-map-view-tabs" class="research-view-controls"></div>
+            <button id="research-map-view-add" class="research-view-button research-view-add" type="button">+ Map</button>
+          </div>
+        </div>
+      </header>
+      <div id="research-detail" class="research-board" aria-live="polite"></div>
+    </main>
+    <aside id="research-inspector" class="research-inspector" aria-label="Selected research" hidden>
+      <header class="inspector-heading">
+        <span id="inspector-type" class="inspector-type">Source</span>
+        <button id="inspector-close" class="inspector-close" type="button" aria-label="Close source details">&times;</button>
+      </header>
+      <div id="research-inspector-content" class="inspector-content"></div>
+    </aside>
+  </div>
+  <dialog id="research-map-create-dialog" class="map-create-dialog" aria-labelledby="research-map-create-heading">
+    <form id="research-map-create-form" class="map-create-form">
+      <h2 id="research-map-create-heading">Create concept map</h2>
+      <label id="research-map-name-label" for="research-map-name">Map name</label>
+      <input id="research-map-name" name="mapName" type="text" placeholder="e.g. Treatment mechanisms">
+      <label for="research-map-topic">Key question or topic</label>
+      <textarea id="research-map-topic" name="keyTopic" required placeholder="What question or topic should anchor this map?"></textarea>
+      <div class="map-create-actions">
+        <button id="research-map-create-cancel" type="button">Cancel</button>
+        <button type="submit">Create map</button>
+      </div>
+    </form>
+  </dialog>
+  <script src="popup.js"></script>
+  <script src="research-map.js"></script>
+</body>
+
+</html>
