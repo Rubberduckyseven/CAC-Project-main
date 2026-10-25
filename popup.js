@@ -634,6 +634,23 @@ if (!document.getElementById("searchlight-bubble")) {
                 }
             }
 
+            const alreadySaved = items.some((savedItem) => {
+    return savedItem.sourceUrl === location.href &&
+           getResearchGroupId(savedItem) === groupId;
+});
+
+if (alreadySaved) {
+    const saveAgain = window.confirm(
+        "This webpage is already saved in this project. Save another copy?"
+    );
+
+    if (!saveAgain) {
+        setSavingState(false);
+        setStatus("Save cancelled. This source is already in your project.");
+        return;
+    }
+}
+
             const item = {
                 id: `${Date.now()}-${Math.random().toString(36).slice(2)}`,
                 groupId,

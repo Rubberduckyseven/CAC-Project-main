@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Research Map</title>
+  <title>Research Graph</title>
   <link rel="icon" type="image/png" href="Tab_icon.png">
 <link rel="stylesheet" href="popup.css">
 
@@ -137,6 +137,7 @@
   }
 
   .source-search input:focus-visible,
+  .source-search select:focus-visible,
   .source-search button:focus-visible {
     outline: 2px solid white;
     outline-offset: 2px;
@@ -435,17 +436,32 @@
     max-width: 620px;
     min-width: 180px;
     margin-right: auto;
+    flex-wrap: wrap;
   }
 
   .source-search input {
+    box-sizing: border-box;
     width: 100%;
     min-width: 0;
+    flex: 1 1 220px;
     min-height: 42px;
     border: 1px solid rgba(137, 159, 207, 0.35);
     border-radius: 6px;
     color: var(--map-text);
     background: #101d3b;
     font: 15px/1.3 "Trebuchet MS", "Segoe UI", sans-serif;
+  }
+
+  .source-search select {
+    min-width: 120px;
+    max-width: 180px;
+    min-height: 36px;
+    padding: 0 8px;
+    border: 1px solid rgba(137, 159, 207, 0.35);
+    border-radius: 5px;
+    color: var(--map-text);
+    background: #101d3b;
+    font: 12px "Trebuchet MS", "Segoe UI", sans-serif;
   }
 
   .source-search input::placeholder {
@@ -720,6 +736,16 @@
     color: var(--map-cyan);
   }
 
+  .research-view-delete {
+    color: #ff9bac;
+  }
+
+  .research-view-delete:hover {
+    border-color: #ff8298;
+    color: #ffd5dc;
+    background: #3a1d35;
+  }
+
   .map-create-dialog {
     box-sizing: border-box;
     width: min(460px, calc(100vw - 32px));
@@ -802,120 +828,180 @@
     background-color: rgba(7, 17, 38, 0.7);
     background-image: radial-gradient(rgba(133, 158, 205, 0.22) 0.8px, transparent 0.8px);
     background-size: 24px 24px;
-    cursor: grab;
     touch-action: none;
     user-select: none;
   }
 
-  .research-board.is-concept-map.is-panning {
-    cursor: grabbing;
-  }
-
-  .concept-map-canvas {
+  .graph-controls {
     position: absolute;
-    inset: 0;
-    pointer-events: none;
-  }
-
-  .concept-map-links {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    overflow: visible;
-    pointer-events: none;
-  }
-
-  .concept-map-link {
-    stroke: rgba(119, 153, 242, 0.78);
-    stroke-width: 2;
-  }
-
-  .concept-map-topic,
-  .concept-map-source {
-    position: absolute;
-    z-index: 1;
-    box-sizing: border-box;
-    width: 210px;
-    border: 1px solid rgba(113, 152, 255, 0.9);
-    border-radius: 8px;
-    color: var(--map-text);
-    background: #102958;
-    box-shadow: 0 8px 26px rgba(0, 0, 0, 0.3);
-    transform: translate(-50%, -50%);
+    z-index: 6;
+    top: 56px;
+    right: 12px;
+    display: flex;
+    gap: 8px;
     pointer-events: auto;
   }
 
-  .concept-map-topic {
-    z-index: 2;
-    width: 260px;
-    min-height: 100px;
+  .excalidraw-graph-editor {
+    position: absolute;
+    inset: 0;
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    gap: 8px;
-    padding: 18px;
-    border-color: var(--map-violet);
-    background: #20265a;
-    text-align: center;
+    background: #0b1220;
   }
 
-  .concept-map-topic-label {
-    color: #c1acff;
+  .excalidraw-graph-mount {
+    position: absolute;
+    inset: 0;
+  }
+
+  .excalidraw-graph-actions {
+    z-index: 5;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 42px;
+    padding: 4px 12px;
+    border-bottom: 1px solid var(--map-border);
+    color: var(--map-muted);
+    background: #0e1a38;
     font-size: 12px;
-    font-weight: 700;
-    text-transform: uppercase;
   }
 
-  .concept-map-topic h2 {
-    margin: 0;
-    font-size: 17px;
-    line-height: 1.35;
-    overflow-wrap: anywhere;
-  }
-
-  .concept-map-topic-edit {
-    align-self: center;
-    min-height: 28px;
-    padding: 0 9px;
-    border: 1px solid rgba(193, 172, 255, 0.55);
-    border-radius: 4px;
-    color: #e6dcff;
-    background: rgba(255, 255, 255, 0.06);
-    font: 12px "Trebuchet MS", "Segoe UI", sans-serif;
+  .excalidraw-graph-actions button {
+    min-height: 30px;
+    padding: 0 10px;
+    border: 1px solid var(--map-border);
+    border-radius: 5px;
+    color: var(--map-text);
+    background: #172548;
+    font: 600 12px "Trebuchet MS", "Segoe UI", sans-serif;
     cursor: pointer;
   }
 
-  .concept-map-topic-edit:hover,
-  .concept-map-topic-edit:focus-visible {
-    border-color: var(--map-cyan);
-    background: rgba(255, 255, 255, 0.12);
+  .excalidraw-graph-actions button:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
   }
 
-  .concept-map-topic-edit:focus-visible {
-    outline: 2px solid var(--map-cyan);
-    outline-offset: 2px;
+  .excalidraw-graph-actions span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
-  .research-board .concept-map-source {
+  .excalidraw-graph-canvas {
     min-height: 0;
-    padding: 0;
-    overflow: visible;
-    border-left: 1px solid rgba(113, 152, 255, 0.9);
+    flex: 1;
   }
 
-  .concept-map-source .research-entry-open {
-    min-height: 140px;
-    padding: 12px 40px 12px 12px;
+  .excalidraw-graph-canvas > div {
+    width: 100%;
+    height: 100%;
   }
 
-  .concept-map-source .research-entry-thumbnail {
-    max-height: 62px;
+  .graph-research-dialog {
+    box-sizing: border-box;
+    width: min(560px, calc(100vw - 32px));
+    max-height: min(80vh, 680px);
+    padding: 20px;
+    border: 1px solid rgba(152, 181, 224, 0.35);
+    border-radius: 8px;
+    color: var(--map-text);
+    background: #0e1a38;
+    box-shadow: 0 18px 50px rgba(0, 0, 0, 0.45);
   }
 
-  .concept-map-source .research-link-menu {
-    top: 5px;
-    right: 5px;
+  .graph-research-dialog::backdrop {
+    background: rgba(0, 0, 20, 0.72);
+  }
+
+  .graph-research-dialog h2 {
+    margin: 0 0 8px;
+    font-size: 20px;
+  }
+
+  .graph-research-help {
+    margin: 0 0 14px;
+    color: var(--map-muted);
+    font-size: 13px;
+    line-height: 1.45;
+  }
+
+  .graph-research-list {
+    display: flex;
+    max-height: min(48vh, 420px);
+    flex-direction: column;
+    gap: 6px;
+    overflow-y: auto;
+    padding: 2px;
+  }
+
+  .graph-research-option {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px;
+    border: 1px solid var(--map-border);
+    border-radius: 5px;
+    background: #101d3b;
+    cursor: pointer;
+  }
+
+  .graph-research-option input {
+    flex: 0 0 auto;
+    margin-top: 3px;
+    accent-color: var(--map-violet);
+  }
+
+  .graph-research-option-text {
+    min-width: 0;
+  }
+
+  .graph-research-option-title,
+  .graph-research-option-meta {
+    display: block;
+    overflow-wrap: anywhere;
+  }
+
+  .graph-research-option-title {
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  .graph-research-option-meta {
+    margin-top: 4px;
+    color: var(--map-muted);
+    font-size: 12px;
+  }
+
+  .graph-research-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-top: 14px;
+  }
+
+  .graph-research-actions button {
+    min-height: 36px;
+    padding: 0 13px;
+    border: 1px solid var(--map-border);
+    border-radius: 5px;
+    color: var(--map-text);
+    background: #172548;
+    font: 600 13px "Trebuchet MS", "Segoe UI", sans-serif;
+    cursor: pointer;
+  }
+
+  .graph-research-actions button[type="submit"] {
+    border-color: #7564e8;
+    background: #4338b9;
+  }
+
+  .graph-research-empty {
+    margin: 8px 0;
+    color: var(--map-muted);
+    font-size: 13px;
   }
 
   .research-board {
@@ -1007,6 +1093,14 @@
     -webkit-box-orient: vertical;
     line-clamp: 3;
     -webkit-line-clamp: 3;
+  }
+
+  .research-entry-connection {
+    display: block;
+    margin-top: auto;
+    padding-top: 8px;
+    border-top: 1px solid rgba(119, 153, 242, 0.35);
+    color: #c1acff;
   }
 
   .research-entry-thumbnail {
@@ -1104,11 +1198,56 @@
   }
 
   .inspector-link {
-    display: block;
-    margin: 12px 0;
+    min-width: 0;
     color: var(--map-cyan);
     font-size: 13px;
     overflow-wrap: anywhere;
+  }
+
+  .inspector-source-actions {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 12px 0;
+  }
+
+  .inspector-credibility-button {
+    flex: 0 0 auto;
+    min-height: 32px;
+    padding: 6px 9px;
+    border: 1px solid var(--map-border);
+    border-radius: 5px;
+    color: var(--map-text);
+    background: #172548;
+    font: 600 12px "Trebuchet MS", "Segoe UI", sans-serif;
+    cursor: pointer;
+  }
+
+  .inspector-credibility-button:hover:not(:disabled) {
+    border-color: var(--map-cyan);
+  }
+
+  .inspector-credibility-button:focus-visible {
+    outline: 2px solid var(--map-cyan);
+    outline-offset: 2px;
+  }
+
+  .inspector-credibility-button:disabled {
+    cursor: wait;
+    opacity: 0.7;
+  }
+
+  .inspector-credibility-result {
+    margin: 0 0 14px;
+    color: #d3dced;
+    font-size: 13px !important;
+    line-height: 1.5;
+    white-space: pre-wrap;
+  }
+
+  .inspector-credibility-result:empty {
+    display: none;
   }
 
   .inspector-image {
@@ -1160,18 +1299,27 @@
 </head>
 <body>
   <header class="map-header">
-    <a class="map-brand" href="research-map.html" aria-label="Searchlight Research Map">
+    <a class="map-brand" href="research-map.html" aria-label="Searchlight Research Graph">
       <img src="https://plus.unsplash.com/premium_vector-1738480057358-9b18c2c172ea?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D" alt="Searchlight Logo"/>
       <span>SEARCHLIGHT</span>
     </a>
     <form id="source-search-form" class="source-search" role="search">
       <input id="source-search-input" type="search" aria-label="Search all categories and sources" placeholder="Search your research...">
+      <select id="source-search-type" aria-label="Search within research type">
+        <option value="">All types</option>
+      </select>
+      <select id="source-search-category" aria-label="Filter by category">
+        <option value="">All categories</option>
+      </select>
       <button type="submit" aria-label="Search sources">Search</button>
       <button id="source-search-clear" type="button">Clear</button>
     </form>
     <div class="map-header-actions">
+      <button id="research-backup" class="topbox topbox-button" type="button">Backup</button>
+      <button id="research-restore" class="topbox topbox-button" type="button">Restore</button>
       <button id="gemini-settings-toggle" class="topbox topbox-button" type="button" aria-haspopup="dialog">Settings</button>
       <button id="saved-research-toggle" class="topbox topbox-button" type="button" aria-haspopup="dialog" aria-expanded="false">Categories</button>
+      <input id="research-restore-file" type="file" accept="application/json,.json" hidden>
     </div>
   </header>
   <div id="research-picker-backdrop" class="research-picker-backdrop" hidden>
@@ -1185,8 +1333,8 @@
   </div>
   <dialog id="gemini-settings" class="gemini-settings" aria-labelledby="gemini-settings-heading">
     <form id="gemini-settings-form">
-      <h2 id="gemini-settings-heading">Gemini summaries</h2>
-      <p>The key is stored in this browser profile and sent to Google for summaries. Extension storage is not a secure secret store; use a Gemini-restricted personal key. Shared deployments need a backend proxy.</p>
+      <h2 id="gemini-settings-heading">Gemini features</h2>
+      <p>The key is stored in this browser profile and sent to Google for summaries and source credibility checks. Credibility checks send the source link and supplied research details to Gemini. Extension storage is not a secure secret store; use a Gemini-restricted personal key. Shared deployments need a backend proxy.</p>
       <label for="gemini-api-key">Gemini API key</label>
       <input id="gemini-api-key" type="password" autocomplete="off" spellcheck="false" placeholder="Paste your API key">
       <p id="gemini-settings-status" class="gemini-settings-status" role="status" aria-live="polite"></p>
@@ -1215,7 +1363,9 @@
           <div id="research-view-controls" class="research-view-controls" hidden>
             <button id="research-cards-view" class="research-view-button" type="button" aria-current="true">Cards</button>
             <div id="research-map-view-tabs" class="research-view-controls"></div>
-            <button id="research-map-view-add" class="research-view-button research-view-add" type="button">+ Map</button>
+            <button id="research-map-rename" class="research-view-button" type="button" hidden>Rename graph</button>
+            <button id="research-map-delete" class="research-view-button research-view-delete" type="button" hidden>Delete graph</button>
+            <button id="research-map-view-add" class="research-view-button research-view-add" type="button">+ Graph</button>
           </div>
         </div>
       </header>
@@ -1231,14 +1381,25 @@
   </div>
   <dialog id="research-map-create-dialog" class="map-create-dialog" aria-labelledby="research-map-create-heading">
     <form id="research-map-create-form" class="map-create-form">
-      <h2 id="research-map-create-heading">Create concept map</h2>
-      <label id="research-map-name-label" for="research-map-name">Map name</label>
+      <h2 id="research-map-create-heading">Create graph</h2>
+      <label id="research-map-name-label" for="research-map-name">Graph name</label>
       <input id="research-map-name" name="mapName" type="text" placeholder="e.g. Treatment mechanisms">
-      <label for="research-map-topic">Key question or topic</label>
-      <textarea id="research-map-topic" name="keyTopic" required placeholder="What question or topic should anchor this map?"></textarea>
+      <label id="research-map-topic-label" for="research-map-topic">Key question or topic</label>
+      <textarea id="research-map-topic" name="keyTopic" required placeholder="What question or topic should anchor this graph?"></textarea>
       <div class="map-create-actions">
         <button id="research-map-create-cancel" type="button">Cancel</button>
-        <button type="submit">Create map</button>
+        <button type="submit">Create graph</button>
+      </div>
+    </form>
+  </dialog>
+  <dialog id="graph-research-dialog" class="graph-research-dialog" aria-labelledby="graph-research-heading">
+    <form id="graph-research-form">
+      <h2 id="graph-research-heading">Add research to graph</h2>
+      <p id="graph-research-help" class="graph-research-help"></p>
+      <div id="graph-research-list" class="graph-research-list"></div>
+      <div class="graph-research-actions">
+        <button id="graph-research-cancel" type="button">Cancel</button>
+        <button type="submit">Save sources</button>
       </div>
     </form>
   </dialog>
