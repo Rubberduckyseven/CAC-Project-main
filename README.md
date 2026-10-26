@@ -27,7 +27,8 @@ Searchlight is loaded as an unpacked extension in Chrome.
 5. Open `chrome://extensions` in Google Chrome.
 6. Turn on Developer mode.
 7. Click `Load unpacked` and select the extracted project folder.
-8. Add your Gemini API key in the extension settings.
+8. In order to use AI features, open the research map by double clicking on the icon in the bottom right corner
+9. Open the settings button, and load an Gemini API Key by copying it from Google AI Studio
 
 > Note: You must load the extracted folder, not the ZIP file itself. If you want to make changes to the project later, you can repeat the build steps in a local terminal and reload the extension in Chrome.
 
