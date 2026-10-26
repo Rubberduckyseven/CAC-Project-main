@@ -4,7 +4,7 @@ An AI-powered Chrome extension that helps students research smarter, not harder.
 
 ## Why Searchlight?
 
-Research usually means a dozen open tabs, scattered notes, and no clear picture of how your sources connect. Searchlight keeps everything in one place and uses AI to guide your thinking instead of handing you answers.
+Research usually means a dozen open tabs, scattered notes, and no clear picture of how your sources connect. Searchlight keeps everything in one place, helping students discover relevant sources, save webpages, organize notes into projects, and visualize connections through an interactive Research Map. Gemini AI guides students to think critically and explore independently instead of simply giving them answers.
 
 ## Features
 
