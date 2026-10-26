@@ -20,29 +20,16 @@ Research usually means a dozen open tabs, scattered notes, and no clear picture 
 
 Searchlight is loaded as an unpacked extension in Chrome.
 
-1. Clone the repo:
+1. Open the GitHub repository link for this project.
+2. Click the green `Code` button.
+3. Select `Download ZIP` to download the project files.
+4. Extract the ZIP file to a location on your computer.
+5. Open `chrome://extensions` in Google Chrome.
+6. Turn on Developer mode.
+7. Click `Load unpacked` and select the extracted project folder.
+8. Add your Gemini API key in the extension settings.
 
-```sh
-git clone https://github.com/<your-username>/<repo-name>.git
-cd <repo-name>
-```
-
-2. Install dependencies and build the Research Map editor:
-
-```sh
-npm install
-npm run build:graph
-```
-
-The build writes the local Excalidraw bundle to `vendor/excalidraw/`. No editor code is loaded from a CDN.
-
-3. Load the extension in Chrome:
-   1. Open `chrome://extensions`
-   2. Turn on Developer mode
-   3. Click `Load unpacked` and select this project folder
-   4. Add your Gemini API key in the extension settings
-
-> After changing code, re-run `npm run build:graph` and click the reload icon on the extension card.
+> Note: You must load the extracted folder, not the ZIP file itself. If you want to make changes to the project later, you can repeat the build steps in a local terminal and reload the extension in Chrome.
 
 ## How to Use
 
